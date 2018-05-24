@@ -423,13 +423,32 @@ public class CommandPermissions extends Command {
                                 }
                                 if(args[3].equalsIgnoreCase("ADD"))
                                 {
-                                    if(permissionPool.getGroups().containsKey(args[4]))
+                                    String groupname = args[4];
+                                    long time = ( args[5].equalsIgnoreCase( "lifetime" ) ? 0L : NetworkUtils.checkIsNumber( args[5] ) ? calcDays( Integer.parseInt( args[5] ) ) : 0L );
+
+                                    if(permissionPool.getGroups().containsKey(groupname))
                                     {
+                                        for ( GroupEntityData groupEntityData : offlinePlayer.getPermissionEntity().getGroups() ) {
+                                            if ( !groupEntityData.getGroup().equals( groupname ) ) {
+                                                continue;
+                                            }
+
+                                            // Set Timeout to lifetime or increase them by the given days
+                                            if ( time == 0L ) {
+                                                groupEntityData.setTimeout( time );
+                                            } else {
+                                                groupEntityData.setTimeout( groupEntityData.getTimeout() + time );
+                                            }
+                                            updatePlayer( offlinePlayer );
+                                            sender.sendMessage( "The player " + offlinePlayer.getName() + " is now also a member of the group " + groupname );
+                                            return;
+                                        }
+
                                         offlinePlayer.getPermissionEntity().getGroups()
-                                                .add(new GroupEntityData(args[4],
-                                                        (args[5].equalsIgnoreCase("lifetime") ? 0L : NetworkUtils.checkIsNumber(args[4]) ? calcDays(Integer.parseInt(args[4])) : 0L)));
+                                                .add(new GroupEntityData(groupname,
+                                                        (args[5].equalsIgnoreCase("lifetime") ? 0L : NetworkUtils.checkIsNumber(args[5]) ? calcDays(Integer.parseInt(args[5])) : 0L)));
                                         updatePlayer(offlinePlayer);
-                                        sender.sendMessage("The player " + offlinePlayer.getName() + " is now also a member of the group " + args[4]);
+                                        sender.sendMessage("The player " + offlinePlayer.getName() + " is now also a member of the group " + groupname);
                                     }
                                     else
                                     {
