@@ -331,7 +331,7 @@ public class CommandPermissions extends Command {
                                 }
                                 if ( args[3].equalsIgnoreCase( "ADD" ) ) {
                                     String groupname = args[4];
-                                    long time = ( args[5].equalsIgnoreCase( "lifetime" ) ? 0L : NetworkUtils.checkIsNumber( args[5] ) ? calcDays( Integer.parseInt( args[5] ) ) : 0L );
+                                    long time = ( args[5].equalsIgnoreCase( "lifetime" ) ? 0L : NetworkUtils.checkIsNumber( args[5] ) ? TimeUnit.DAYS.toMillis( Integer.parseInt( args[5] ) ) : 0L );
 
                                     if ( permissionPool.getGroups().containsKey( groupname ) ) {
                                         for ( GroupEntityData groupEntityData : offlinePlayer.getPermissionEntity().getGroups() ) {
@@ -343,7 +343,7 @@ public class CommandPermissions extends Command {
                                             if ( time == 0L ) {
                                                 groupEntityData.setTimeout( time );
                                             } else {
-                                                groupEntityData.setTimeout( groupEntityData.getTimeout() + TimeUnit.DAYS.toMillis( time ) );
+                                                groupEntityData.setTimeout( groupEntityData.getTimeout() + time );
                                             }
                                             updatePlayer( offlinePlayer );
                                             sender.sendMessage( "The player " + offlinePlayer.getName() + " is now also a member of the group " + groupname );
