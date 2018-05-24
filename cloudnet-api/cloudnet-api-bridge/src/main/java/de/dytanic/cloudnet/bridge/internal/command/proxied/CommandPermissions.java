@@ -316,7 +316,7 @@ public final class CommandPermissions extends Command implements TabExecutor {
                                             if ( time == 0L ) {
                                                 groupEntityData.setTimeout( time );
                                             } else {
-                                                groupEntityData.setTimeout( groupEntityData.getTimeout() + time );
+                                                groupEntityData.setTimeout( groupEntityData.getTimeout() + TimeUnit.DAYS.toMillis( time ) );
                                             }
                                             updatePlayer( offlinePlayer );
                                             sender.sendMessage( "The player " + offlinePlayer.getName() + " is now also a member of the group " + groupname );
