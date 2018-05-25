@@ -19,6 +19,7 @@ import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import de.dytanic.cloudnet.lib.player.PlayerCommandExecution;
 import de.dytanic.cloudnet.lib.player.PlayerConnection;
+import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.dytanic.cloudnet.lib.proxylayout.Motd;
 import de.dytanic.cloudnet.lib.proxylayout.ProxyConfig;
 import de.dytanic.cloudnet.lib.proxylayout.TabList;
@@ -336,6 +337,7 @@ public class ProxiedListener implements Listener {
 
     private void initTabHeaderFooter( ProxiedPlayer proxiedPlayer ) {
         TabList tabList = CloudProxy.getInstance().getProxyGroup().getProxyConfig().getTabList();
+        PermissionGroup rank = CloudAPI.getInstance().getOnlinePlayer( proxiedPlayer.getUniqueId() ).getPermissionEntity().getHighestPermissionGroup( CloudAPI.getInstance().getPermissionPool() );
         proxiedPlayer.setTabHeader(
                 new TextComponent( ChatColor.translateAlternateColorCodes( '&', tabList.getHeader()
                         .replaceAll( "%proxy%", CloudAPI.getInstance().getServerId() )
@@ -344,7 +346,11 @@ public class ProxiedListener implements Listener {
                         .replaceAll( "%max_players%", CloudProxy.getInstance().getProxyGroup().getProxyConfig().getMaxPlayers() + NetworkUtils.EMPTY_STRING )
                         .replaceAll( "%group%", ( proxiedPlayer.getServer() != null && CloudProxy.getInstance().getCachedServers().containsKey( proxiedPlayer.getServer().getInfo().getName() ) ? CloudProxy.getInstance().getCachedServers().get( proxiedPlayer.getServer().getInfo().getName() ).getServiceId().getGroup() : "Hub" ) )
                         .replaceAll( "%proxy_group%", CloudProxy.getInstance().getProxyGroup().getName() )
-                        .replaceAll( "%motd%", proxiedPlayer.getServer() != null ? proxiedPlayer.getServer().getInfo().getMotd() : "-" )
+                        .replaceAll( "%motd%", proxiedPlayer.getServer() != null ? CloudAPI.getInstance().getServerInfo( proxiedPlayer.getServer().getInfo().getName() ).getMotd() : "-" )
+                        .replaceAll( "%rank_prefix%", rank.getPrefix() )
+                        .replaceAll( "%rank_suffix%", rank.getSuffix() )
+                        .replaceAll( "%rank_display%", rank.getDisplay() )
+                        .replaceAll( "%rank%", rank.getName() )
                 ) ),
                 new TextComponent( ChatColor.translateAlternateColorCodes( '&', tabList.getFooter()
                         .replaceAll( "%proxy%", CloudAPI.getInstance().getServerId() )
@@ -353,7 +359,12 @@ public class ProxiedListener implements Listener {
                         .replaceAll( "%max_players%", CloudProxy.getInstance().getProxyGroup().getProxyConfig().getMaxPlayers() + NetworkUtils.EMPTY_STRING )
                         .replaceAll( "%group%", ( proxiedPlayer.getServer() != null && CloudProxy.getInstance().getCachedServers().containsKey( proxiedPlayer.getServer().getInfo().getName() ) ? CloudProxy.getInstance().getCachedServers().get( proxiedPlayer.getServer().getInfo().getName() ).getServiceId().getGroup() : "Hub" ) )
                         .replaceAll( "%proxy_group%", CloudProxy.getInstance().getProxyGroup().getName() )
-                        .replaceAll( "%motd%", proxiedPlayer.getServer() != null ? proxiedPlayer.getServer().getInfo().getMotd() : "-" )
+                        .replaceAll( "%motd%", proxiedPlayer.getServer() != null ? CloudAPI.getInstance().getServerInfo( proxiedPlayer.getServer().getInfo().getName() ).getMotd() : "-" )
+                        .replaceAll( "%proxy_group%", CloudProxy.getInstance().getProxyGroup().getName() )
+                        .replaceAll( "%rank_prefix%", rank.getPrefix() )
+                        .replaceAll( "%rank_suffix%", rank.getSuffix() )
+                        .replaceAll( "%rank_display%", rank.getDisplay() )
+                        .replaceAll( "%rank%", rank.getName() )
                 ) ) );
     }
 

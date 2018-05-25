@@ -15,6 +15,7 @@ import de.dytanic.cloudnet.lib.MultiValue;
 import de.dytanic.cloudnet.lib.NetworkUtils;
 import de.dytanic.cloudnet.lib.player.CloudPlayer;
 import de.dytanic.cloudnet.lib.player.OfflinePlayer;
+import de.dytanic.cloudnet.lib.player.permission.PermissionGroup;
 import de.dytanic.cloudnet.lib.proxylayout.ServerFallback;
 import de.dytanic.cloudnet.lib.proxylayout.TabList;
 import de.dytanic.cloudnet.lib.server.ProxyGroup;
@@ -431,27 +432,36 @@ public class CloudProxy implements ICloudService, PlayerChatExecutor {
             if (CloudProxy.getInstance().getProxyGroup() != null && CloudProxy.getInstance().getProxyGroup().getProxyConfig().getTabList().isEnabled())
             {
                 TabList tabList = CloudProxy.getInstance().getProxyGroup().getProxyConfig().getTabList();
-
-                for (ProxiedPlayer proxiedPlayer : ProxyServer.getInstance().getPlayers())
+                for (ProxiedPlayer proxiedPlayer : ProxyServer.getInstance().getPlayers()) {
+                    PermissionGroup rank = CloudAPI.getInstance().getOnlinePlayer( proxiedPlayer.getUniqueId() ).getPermissionEntity().getHighestPermissionGroup( CloudAPI.getInstance().getPermissionPool() );
                     proxiedPlayer.setTabHeader(
-                            new TextComponent(ChatColor.translateAlternateColorCodes('&', tabList.getHeader()
-                                    .replaceAll("%proxy%", CloudAPI.getInstance().getServerId())
-                                    .replaceAll("%server%", (proxiedPlayer.getServer() != null ? proxiedPlayer.getServer().getInfo().getName() : CloudProxy.getInstance().getProxyGroup().getName()))
-                                    .replaceAll("%online_players%", CloudAPI.getInstance().getOnlineCount() + NetworkUtils.EMPTY_STRING)
-                                    .replaceAll("%max_players%", CloudProxy.getInstance().getProxyGroup().getProxyConfig().getMaxPlayers() + NetworkUtils.EMPTY_STRING)
-                                    .replaceAll("%group%", (proxiedPlayer.getServer() != null && CloudProxy.getInstance().getCachedServers().containsKey(proxiedPlayer.getServer().getInfo().getName()) ? CloudProxy.getInstance().getCachedServers().get(proxiedPlayer.getServer().getInfo().getName()).getServiceId().getGroup() : "Hub"))
-                                    .replaceAll("%proxy_group%", CloudProxy.getInstance().getProxyGroup().getName())
-                                    .replaceAll("%motd%", CloudServer.getInstance().getMotd())
-                            )),
-                            new TextComponent(ChatColor.translateAlternateColorCodes('&', tabList.getFooter()
-                                    .replaceAll("%proxy%", CloudAPI.getInstance().getServerId())
-                                    .replaceAll("%server%", (proxiedPlayer.getServer() != null ? proxiedPlayer.getServer().getInfo().getName() : CloudProxy.getInstance().getProxyGroup().getName()))
-                                    .replaceAll("%online_players%", CloudAPI.getInstance().getOnlineCount() + NetworkUtils.EMPTY_STRING)
-                                    .replaceAll("%max_players%", CloudProxy.getInstance().getProxyGroup().getProxyConfig().getMaxPlayers() + NetworkUtils.EMPTY_STRING)
-                                    .replaceAll("%group%", (proxiedPlayer.getServer() != null && CloudProxy.getInstance().getCachedServers().containsKey(proxiedPlayer.getServer().getInfo().getName()) ? CloudProxy.getInstance().getCachedServers().get(proxiedPlayer.getServer().getInfo().getName()).getServiceId().getGroup() : "Hub"))
-                                    .replaceAll("%proxy_group%", CloudProxy.getInstance().getProxyGroup().getName())
-                                    .replaceAll("%motd%", CloudServer.getInstance().getMotd())
-                            )));
+                            new TextComponent( ChatColor.translateAlternateColorCodes( '&', tabList.getHeader()
+                                    .replaceAll( "%proxy%", CloudAPI.getInstance().getServerId() )
+                                    .replaceAll( "%server%", ( proxiedPlayer.getServer() != null ? proxiedPlayer.getServer().getInfo().getName() : CloudProxy.getInstance().getProxyGroup().getName() ) )
+                                    .replaceAll( "%online_players%", CloudAPI.getInstance().getOnlineCount() + NetworkUtils.EMPTY_STRING )
+                                    .replaceAll( "%max_players%", CloudProxy.getInstance().getProxyGroup().getProxyConfig().getMaxPlayers() + NetworkUtils.EMPTY_STRING )
+                                    .replaceAll( "%group%", ( proxiedPlayer.getServer() != null && CloudProxy.getInstance().getCachedServers().containsKey( proxiedPlayer.getServer().getInfo().getName() ) ? CloudProxy.getInstance().getCachedServers().get( proxiedPlayer.getServer().getInfo().getName() ).getServiceId().getGroup() : "Hub" ) )
+                                    .replaceAll( "%proxy_group%", CloudProxy.getInstance().getProxyGroup().getName() )
+                                    .replaceAll( "%motd%", CloudServer.getInstance().getMotd() )
+                                    .replaceAll( "%rank_prefix%", rank.getPrefix() )
+                                    .replaceAll( "%rank_suffix%", rank.getSuffix() )
+                                    .replaceAll( "%rank_display%", rank.getDisplay() )
+                                    .replaceAll( "%rank%", rank.getName() )
+                            ) ),
+                            new TextComponent( ChatColor.translateAlternateColorCodes( '&', tabList.getFooter()
+                                    .replaceAll( "%proxy%", CloudAPI.getInstance().getServerId() )
+                                    .replaceAll( "%server%", ( proxiedPlayer.getServer() != null ? proxiedPlayer.getServer().getInfo().getName() : CloudProxy.getInstance().getProxyGroup().getName() ) )
+                                    .replaceAll( "%online_players%", CloudAPI.getInstance().getOnlineCount() + NetworkUtils.EMPTY_STRING )
+                                    .replaceAll( "%max_players%", CloudProxy.getInstance().getProxyGroup().getProxyConfig().getMaxPlayers() + NetworkUtils.EMPTY_STRING )
+                                    .replaceAll( "%group%", ( proxiedPlayer.getServer() != null && CloudProxy.getInstance().getCachedServers().containsKey( proxiedPlayer.getServer().getInfo().getName() ) ? CloudProxy.getInstance().getCachedServers().get( proxiedPlayer.getServer().getInfo().getName() ).getServiceId().getGroup() : "Hub" ) )
+                                    .replaceAll( "%proxy_group%", CloudProxy.getInstance().getProxyGroup().getName() )
+                                    .replaceAll( "%motd%", CloudServer.getInstance().getMotd() )
+                                    .replaceAll( "%rank_prefix%", rank.getPrefix() )
+                                    .replaceAll( "%rank_suffix%", rank.getSuffix() )
+                                    .replaceAll( "%rank_display%", rank.getDisplay() )
+                                    .replaceAll( "%rank%", rank.getName() )
+                            ) ) );
+                }
             }
 
         }
